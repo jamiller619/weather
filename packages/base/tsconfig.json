@@ -1,0 +1,17 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "declarationDir": "../../dist/base/@types",
+    "emitDeclarationOnly": true,
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "module": "es2022",
+    "resolveJsonModule": true,
+    "target": "es2021"
+  },
+  "include": ["**/*.ts", "**/*.d.ts"]
+}

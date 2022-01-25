@@ -1,0 +1,9 @@
+{
+  "files": [],
+  "include": [],
+  "references": [
+    { "path": "./packages/api" },
+    { "path": "./packages/pwa" },
+    { "path": "./packages/base" }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "parserOptions": {
+    "project": ["../../tsconfig.base.json"]
+  },
+  "plugins": ["react"],
+  "extends": ["plugin:react/recommended", "plugin:react-hooks/recommended"],
+  "rules": {
+    "react/react-in-jsx-scope": "off",
+    "react/prop-types": "off"
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  }
+}

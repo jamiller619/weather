@@ -1,0 +1,17 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "declarationDir": "../../dist/pwa/@types",
+    "emitDeclarationOnly": true,
+    "moduleResolution": "node",
+    "jsx": "preserve",
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "module": "es2022"
+  },
+  "include": ["**/*.ts", "**/*.tsx"],
+  "references": [{ "path": "../base" }]
+}

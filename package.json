@@ -1,0 +1,38 @@
+{
+  "name": "weather",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dx": "concurrently \"yarn dx:api\" \"yarn dx:pwa\"",
+    "dx:pwa": "yarn vite --config packages/pwa/vite.config.ts",
+    "dx:api": "concurrently \"yarn build:api --watch\" \"nodemon --experimental-specifier-resolution=node -r dotenv/config dist/api/index.js\"",
+    "build": "yarn build:api && yarn build:pwa",
+    "build:dev": "yarn build:api && yarn build:pwa --minify false",
+    "build:api": "node scripts/api/build.js",
+    "build:pwa": "yarn clean:pwa & yarn dx:pwa build",
+    "start:api": "node --experimental-specifier-resolution=node -r dotenv/config dist/api/index.js",
+    "clean": "yarn rimraf dist *.tsbuildinfo",
+    "clean:pwa": "yarn rimraf dist/pwa"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.8.1",
+    "@typescript-eslint/parser": "^5.8.1",
+    "concurrently": "^7.0.0",
+    "esbuild": "^0.14.10",
+    "eslint": "^8.5.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "nodemon": "^2.0.15",
+    "prettier": "^2.5.1",
+    "prettier-plugin-organize-imports": "^2.3.4",
+    "rimraf": "^3.0.2",
+    "typescript": "^4.5.4",
+    "vite": "^2.7.9"
+  }
+}

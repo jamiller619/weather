@@ -1,0 +1,31 @@
+{
+  "folders": [
+    {
+      "name": "weather",
+      "path": ".."
+    },
+    {
+      "name": "dist",
+      "path": "../dist"
+    },
+    {
+      "name": "scripts",
+      "path": "../scripts"
+    },
+    {
+      "name": "@weather/base",
+      "path": "../packages/base"
+    },
+    {
+      "name": "@weather/api",
+      "path": "../packages/api"
+    },
+    {
+      "name": "@weather/pwa",
+      "path": "../packages/pwa"
+    }
+  ],
+  "settings": {
+    "typescript.tsdk": "./node_modules/typescript/lib"
+  }
+}
