@@ -1,10 +1,12 @@
 import { Fragment } from 'react'
 
+type BreakWordProps = {
+  children: string
+}
+
 export default function BreakWord({
   children,
-}: {
-  children: string
-}): JSX.Element | null {
+}: BreakWordProps): JSX.Element | null {
   if (
     children == null ||
     (typeof children === 'string' && children.trim() === '')

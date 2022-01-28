@@ -1,21 +1,22 @@
-import Location from '@weather/base/models/Location'
-import User, { createUser, UserSettings } from '@weather/base/models/User'
-import { getActiveLocation as fetchActiveLocation } from 'store/activeLocation'
+import User, {
+  createUser,
+  UserLocation,
+  UserSettings,
+} from '@weather/base/models/User'
 import State from 'store/State'
-import { GetState, SetState } from 'zustand'
+import { SetState } from 'zustand'
 
-export default interface UserState extends User {
+export type UserState = User & {
   activeLocationId?: string
-  getActiveLocation: () => Promise<Location | undefined>
-  setActiveLocationId: (locationId: string) => void
-  addLocation: (location: Location, isActive?: boolean) => void
+  setActiveLocation: (locationId: string) => void
+  addLocation: (location: UserLocation, isActive?: boolean) => void
   removeLocation: (locationId: string) => void
-  editLocation: (locationId: string, location: Partial<Location>) => void
+  editLocation: (locationId: string, location: Partial<UserLocation>) => void
   saveSettings: (settings: Partial<UserSettings>) => void
 }
 
 const addLocation = (set: SetState<State>) => {
-  return (location: Location, isActive = false): void => {
+  return (location: UserLocation, isActive = false): void => {
     set((prev) => ({
       user: {
         ...prev.user,
@@ -29,19 +30,7 @@ const addLocation = (set: SetState<State>) => {
   }
 }
 
-const getActiveLocation = (get: GetState<State>) => {
-  return async (): Promise<Location | undefined> => {
-    const { user } = get()
-
-    if (user.activeLocationId != null) {
-      return user.locations[user.activeLocationId]
-    }
-
-    return fetchActiveLocation()
-  }
-}
-
-const setActiveLocationId = (set: SetState<State>) => {
+const setActiveLocation = (set: SetState<State>) => {
   return (locationId: string) => {
     set((prev) => ({
       user: {
@@ -84,7 +73,7 @@ const saveSettings = (set: SetState<State>) => {
 }
 
 const editLocation = (set: SetState<State>) => {
-  return (locationId: string, location: Partial<Location>): void => {
+  return (locationId: string, location: Partial<UserLocation>): void => {
     set((prev) => {
       const loc = prev.user.locations[locationId]
 
@@ -106,12 +95,11 @@ const editLocation = (set: SetState<State>) => {
   }
 }
 
-export const createUserSlice = (set: SetState<State>, get: GetState<State>) => {
+export const createUserSlice = (set: SetState<State>) => {
   return {
     user: {
       ...createUser(),
-      getActiveLocation: getActiveLocation(get),
-      setActiveLocationId: setActiveLocationId(set),
+      setActiveLocation: setActiveLocation(set),
       addLocation: addLocation(set),
       removeLocation: removeLocation(set),
       editLocation: editLocation(set),

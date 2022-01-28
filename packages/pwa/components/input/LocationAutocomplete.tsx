@@ -3,11 +3,11 @@ import { Textbox } from 'components/input'
 import { List, ListItem, MutedText, StrongText } from 'components/typography'
 import useGAPI from 'hooks/useGAPI'
 import useIsMounted from 'hooks/useIsMounted'
+import geocode from 'location/geocode'
 import { ChangeEvent, Fragment } from 'react'
 import useOnClickOutside from 'react-cool-onclickoutside'
 import styled from 'styled-components'
 import usePlacesAutocomplete from 'use-places-autocomplete'
-import geocode from './geocode'
 
 const Headline = styled(StrongText)`
   display: inline;

@@ -1,11 +1,11 @@
-import { HTMLAttributes, ReactNode } from 'react'
+import { forwardRef, HTMLAttributes, PropsWithChildren } from 'react'
 import styled from 'styled-components'
 
-export type TextProps = HTMLAttributes<HTMLElement> & {
-  children: ReactNode
+export type TextProps = PropsWithChildren<HTMLAttributes<HTMLElement>> & {
   as?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p' | 'div'
   inline?: boolean
   mono?: boolean
+  ref?: React.ForwardedRef<HTMLElement | undefined>
 }
 
 const Wrapper = styled.span<TextProps>`
@@ -14,9 +14,13 @@ const Wrapper = styled.span<TextProps>`
   font-family: ${({ mono, theme }) => (mono ? theme.fonts.mono : 'inherit')};
 `
 
-export default function Text(props: TextProps) {
-  return <Wrapper {...props} />
-}
+const Text: React.FC<TextProps> = forwardRef((props, ref) => (
+  <Wrapper {...props} ref={ref} />
+))
+
+Text.displayName = 'Text'
+
+export default Text
 
 export const Headline = styled(Text).attrs({
   as: 'h1',

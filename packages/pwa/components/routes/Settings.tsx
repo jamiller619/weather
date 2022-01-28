@@ -1,5 +1,5 @@
-// import MarkerIcon from 'components/icons/MarkerIcon'
 import { Switch } from 'components/input'
+import LocationAutocomplete from 'components/input/LocationAutocomplete'
 import {
   Flex,
   FlexDirection,
@@ -20,7 +20,6 @@ import { State, useStore } from 'store'
 import styled, { css, keyframes } from 'styled-components'
 import formatLocation from 'utils/formatLocation'
 import shallow from 'zustand/shallow'
-import LocationAutocomplete from '../settings/LocationAutocomplete'
 
 const Container = styled.div<{ show: boolean }>`
   ${pageStyle}
@@ -131,6 +130,7 @@ const DeleteIcon = styled(VscTrash)`
 const MarkerIcon = styled(VscLocation)`
   ${icon}
   fill: ${({ theme }) => theme.colors.success};
+  padding-right: 0.25rem;
 `
 
 type SettingsToggleIconProps = SVGAttributes<SVGSVGElement> & { show: boolean }
@@ -221,7 +221,9 @@ export default function Settings(): JSX.Element {
                   {location.id === activeLocationId && <MarkerIcon />}
                   {formatLocation(location)}
                 </Flex>
-                <DeleteIcon onClick={handleDeleteLocation(location.id)} />
+                {location.id !== activeLocationId && (
+                  <DeleteIcon onClick={handleDeleteLocation(location.id)} />
+                )}
               </LocationListItem>
             ))}
           </LocationList>

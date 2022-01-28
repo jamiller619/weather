@@ -1,6 +1,6 @@
 import useSize from '@react-hook/size'
 import clamp from 'lodash.clamp'
-import { SVGAttributes, useMemo, useRef } from 'react'
+import { SVGAttributes, useEffect, useRef, useState } from 'react'
 import { animated, useSpring } from 'react-spring'
 import styled from 'styled-components'
 
@@ -36,11 +36,22 @@ export default function Backdrop({
   const ref = useRef<HTMLDivElement>(null)
   const svgRef = useRef<SVGSVGElement>(null)
   const [_, contentHeight] = useSize(ref)
-  const ws = useMemo(() => {
-    return {
-      height: window.innerHeight,
-      width: window.innerWidth,
+  const [ws, setWindowSize] = useState({
+    height: window.innerHeight,
+    width: window.innerWidth,
+  })
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowSize({
+        height: window.innerHeight,
+        width: window.innerWidth,
+      })
     }
+
+    window.addEventListener('resize', handleResize)
+
+    return () => void window.removeEventListener('resize', handleResize)
   }, [])
 
   const padding = 16
@@ -54,9 +65,9 @@ export default function Backdrop({
 
   const openDims = {
     x: padding / 2,
-    y: -(ws.height / 2) - padding * 1.5,
+    y: -(ws.height / 2) + padding,
     width: ws.width - padding,
-    height: ws.height - padding,
+    height: ws.height - padding * 2,
   }
 
   const config = {

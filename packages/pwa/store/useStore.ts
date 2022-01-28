@@ -1,12 +1,12 @@
 import deepMerge from 'deepmerge'
-import create, { GetState, SetState } from 'zustand'
+import create, { SetState } from 'zustand'
 import { persist, PersistOptions } from 'zustand/middleware'
-import { createUserSlice } from './slices/UserState'
-import { createWeatherSlice } from './slices/WeatherState'
+import { createUserSlice } from './slices/userSlice'
+import { createWeatherSlice } from './slices/weatherSlice'
 import State from './State'
 
-const createState = (set: SetState<State>, get: GetState<State>): State => ({
-  ...createUserSlice(set, get),
+const createState = (set: SetState<State>): State => ({
+  ...createUserSlice(set),
   ...createWeatherSlice(set),
 })
 

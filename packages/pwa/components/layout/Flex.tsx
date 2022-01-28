@@ -1,4 +1,4 @@
-import { HTMLAttributes, ReactNode } from 'react'
+import { HTMLAttributes, PropsWithChildren } from 'react'
 import styled, { css } from 'styled-components'
 
 export enum FlexDirection {
@@ -22,14 +22,13 @@ export enum FlexPosition {
   baseline = 'baseline',
 }
 
-export type FlexContainerProps = HTMLAttributes<HTMLDivElement> & {
+export type FlexProps = PropsWithChildren<HTMLAttributes<HTMLDivElement>> & {
   dir?: FlexDirection
   justify?: FlexPosition | FlexDistribute
   align?: FlexPosition
-  children: ReactNode
 }
 
-const Container: React.FC<FlexContainerProps> = ({
+const Container: React.FC<FlexProps> = ({
   /* eslint-disable @typescript-eslint/no-unused-vars */
   dir,
   justify,

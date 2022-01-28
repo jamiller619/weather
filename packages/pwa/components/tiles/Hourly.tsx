@@ -1,5 +1,5 @@
-import { State, useStore } from 'store'
-import shallow from 'zustand/shallow'
+import { useMemo } from 'react'
+import { useWeather } from 'store'
 import Column from './Column'
 import Tile from './Tile'
 
@@ -16,14 +16,14 @@ const formatToHour = (date?: Date) => {
 
 const formatTime = (time: Date) => formatToHour(time).toString()
 
-const selector = (state: State) => state.weather.hourly.slice(0, 4)
-
 export default function Hourly(): JSX.Element {
-  const forecast = useStore(selector, shallow)
+  return null
+  const state = useWeather()
+  const hourly = useMemo(() => state?.hourly?.slice(0, 4), [state])
 
   return (
     <Tile title="Hourly">
-      {forecast.map((data) => (
+      {hourly.map((data) => (
         <Column
           key={data.startTime?.getTime?.()}
           title={formatTime(data.startTime)}

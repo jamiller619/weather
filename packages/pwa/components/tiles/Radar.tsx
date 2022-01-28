@@ -10,7 +10,7 @@ import {
   useMap,
   WMSTileLayer,
 } from 'react-leaflet'
-import { useActiveLocation } from 'store'
+import useActiveLocation from 'store/useActiveLocation'
 import styled from 'styled-components'
 import Tile from './Tile'
 
@@ -107,6 +107,7 @@ const Map = React.memo(({ pos }: { pos: LatLngTuple }) => {
 Map.displayName = 'Map'
 
 const Radar: React.FC = () => {
+  return null
   const [isOpen, setIsOpen] = useState(false)
   const activeLocation = useActiveLocation()
   const pos = [activeLocation?.lat, activeLocation?.lng] as LatLngTuple

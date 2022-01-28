@@ -1,12 +1,12 @@
 import { toDegrees } from '@weather/base/utils/convert'
-// import shallow from 'zustand/shallow'
+import shallow from 'zustand/shallow'
 import State from './State'
 import useStore from './useStore'
 
 const selector = (state: State) => state.user.settings ?? {}
 
 export default function useSettings() {
-  return useStore(selector)
+  return useStore(selector, shallow)
 }
 
 export const useUserTempFormat = () => {

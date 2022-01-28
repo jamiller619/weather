@@ -5,9 +5,10 @@ import { animated, useSprings } from 'react-spring'
 import styled from 'styled-components'
 
 export type CarouselProps = PropsWithChildren<
-  HTMLAttributes<HTMLDivElement>
+  Omit<HTMLAttributes<HTMLDivElement>, 'onChange'>
 > & {
   disabled?: boolean
+  onChange?: (index: number) => void
 }
 
 const Container = styled.div`
@@ -33,6 +34,7 @@ const AnimatedTile = animated(Tile)
 
 export default function Carousel({
   children,
+  onChange,
   disabled = false,
   ...props
 }: CarouselProps): JSX.Element {
@@ -46,27 +48,40 @@ export default function Carousel({
   }))
 
   const bind = useDrag(
-    ({ active, movement: [mx], direction: [xDir], cancel }) => {
-      if (active && Math.abs(mx) > width / 4) {
-        index.current = clamp(
-          index.current + (xDir > 0 ? -1 : 1),
+    ({ active, movement: [mx], direction: [dx], cancel }) => {
+      const amx = Math.abs(mx)
+
+      if (active && amx > width / 4) {
+        const oldIndex = index.current
+        const newIndex = clamp(
+          oldIndex + (dx > 0 ? -1 : 1),
           0,
           items.length - 1
         )
+
+        if (oldIndex !== newIndex) {
+          onChange?.(newIndex)
+        }
+
+        index.current = newIndex
+
         cancel()
       }
 
       api.start((i) => {
         if (i < index.current - 1 || i > index.current + 1) {
-          return {}
+          return {
+            display: 'none',
+          }
         }
 
         const x = (i - index.current) * width + (active ? mx : 0)
-        const scale = active ? 1 - Math.abs(mx) / width / 2 : 1
+        const scale = active ? 1 - amx / width / 2 : 1
 
         return {
           x,
           scale,
+          display: 'block',
         }
       })
     }
@@ -74,13 +89,11 @@ export default function Carousel({
 
   return (
     <Container {...props}>
-      {springs.map(({ x, scale }, i) => {
-        return (
-          <animated.div {...(disabled ? {} : bind())} key={i} style={{ x }}>
-            <AnimatedTile style={{ scale }}>{items[i]}</AnimatedTile>
-          </animated.div>
-        )
-      })}
+      {springs.map(({ x, scale }, i) => (
+        <animated.div {...(disabled ? {} : bind())} key={i} style={{ x }}>
+          <AnimatedTile style={{ scale }}>{items[i]}</AnimatedTile>
+        </animated.div>
+      ))}
     </Container>
   )
 }

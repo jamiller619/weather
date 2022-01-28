@@ -12,7 +12,7 @@ const doesScriptExist = () => {
 }
 
 export default function useGAPI() {
-  const [isLoaded, setIsLoaded] = useState(false)
+  const [isLoaded, setIsLoaded] = useState(doesScriptExist())
 
   useEffect(() => {
     const tag = document.createElement('script')

@@ -17,6 +17,10 @@ const Title = styled.div`
   height: 2rem;
 `
 
+const FooterText = styled(LargeText)`
+  font-family: ${({ theme }) => theme.fonts.mono};
+`
+
 type ColumnProps = {
   title: string
   forecast: Forecast
@@ -34,7 +38,7 @@ export default function Column({ title, forecast }: ColumnProps) {
         forecast={forecast.shortDescription}
         isDay={forecast.isDay}
       />
-      <LargeText>{formatTemp(forecast.temp)}</LargeText>
+      <FooterText>{formatTemp(forecast.temp)}</FooterText>
     </ColumnContainer>
   )
 }

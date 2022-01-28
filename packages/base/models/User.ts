@@ -7,10 +7,14 @@ export type UserSettings = {
   autoDetectCurrentLocation: boolean
 }
 
+export type UserLocation = Location & {
+  isCurrent?: boolean
+}
+
 export default interface User {
   id: string
   locations: {
-    [id: string]: Location
+    [id: string]: UserLocation
   }
   settings: UserSettings
 }
