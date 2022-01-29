@@ -1,5 +1,5 @@
-import { State, useStore } from 'store'
 import shallow from 'zustand/shallow'
+import { State, useStore } from '~/store'
 import Column from './Column'
 import Tile from './Tile'
 

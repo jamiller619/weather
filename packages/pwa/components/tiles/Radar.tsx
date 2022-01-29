@@ -1,4 +1,3 @@
-import { MAPBOX_STYLE, MAPBOX_TOKEN } from 'config'
 import Leaflet, { LatLngTuple } from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import 'mapbox-gl-leaflet'
@@ -10,8 +9,9 @@ import {
   useMap,
   WMSTileLayer,
 } from 'react-leaflet'
-import useActiveLocation from 'store/useActiveLocation'
 import styled from 'styled-components'
+import { MAPBOX_STYLE, MAPBOX_TOKEN } from '~/config'
+import useActiveLocation from '~/store/useActiveLocation'
 import Tile from './Tile'
 
 const ZOOM = 11

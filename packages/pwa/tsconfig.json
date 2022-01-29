@@ -9,13 +9,9 @@
     "moduleResolution": "node",
     "jsx": "preserve",
     "allowSyntheticDefaultImports": true,
-    "baseUrl": ".",
     "module": "es2022",
     "paths": {
-      "~/*": [
-        "./*"
-      ]
-    },
+      "~/*": ["./*"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx"],

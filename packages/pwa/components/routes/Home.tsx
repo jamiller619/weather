@@ -1,22 +1,22 @@
 import Location from '@weather/base/models/Location'
-import Backdrop from 'components/backdrop/Backdrop'
-import Carousel from 'components/carousel/Carousel'
+import { Fragment, HTMLAttributes, useCallback, useMemo, useState } from 'react'
+import { useLocation } from 'react-router-dom'
+import styled, { css } from 'styled-components'
+import shallow from 'zustand/shallow'
+import Backdrop from '~/components/backdrop/Backdrop'
+import Carousel from '~/components/carousel/Carousel'
 import {
   Flex,
   FlexDirection,
   FlexDistribute,
   FlexPosition,
   pageStyle,
-} from 'components/layout'
-import PageControls from 'components/page-controls/PageControls'
-import * as Tiles from 'components/tiles'
-import { Headline, LargeText, Text } from 'components/typography'
-import { Fragment, HTMLAttributes, useCallback, useMemo, useState } from 'react'
-import { useLocation } from 'react-router-dom'
-import { State, useStore, useUserTempFormat } from 'store'
-import styled, { css } from 'styled-components'
-import formatLocation from 'utils/formatLocation'
-import shallow from 'zustand/shallow'
+} from '~/components/layout'
+import PageControls from '~/components/page-controls/PageControls'
+import * as Tiles from '~/components/tiles'
+import { Headline, LargeText, Text } from '~/components/typography'
+import { State, useStore, useUserTempFormat } from '~/store'
+import formatLocation from '~/utils/formatLocation'
 
 const Container = styled(Flex).attrs({
   dir: FlexDirection.column,

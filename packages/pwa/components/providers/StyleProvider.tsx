@@ -1,12 +1,12 @@
 import { Fragment, ReactNode } from 'react'
-import WeatherIcons from 'style/fonts/WeatherIcons.woff'
-import { darkTheme } from 'style/theme'
 import {
   createGlobalStyle,
   StyleSheetManager,
   ThemeProvider,
 } from 'styled-components'
 import reset from 'styled-reset'
+import WeatherIcons from '~/style/fonts/WeatherIcons.woff'
+import { darkTheme } from '~/style/theme'
 
 const GlobalStyle = createGlobalStyle`
   ${reset}

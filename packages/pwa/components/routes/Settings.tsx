@@ -1,13 +1,3 @@
-import { Switch } from 'components/input'
-import LocationAutocomplete from 'components/input/LocationAutocomplete'
-import {
-  Flex,
-  FlexDirection,
-  FlexDistribute,
-  FlexPosition,
-  pageStyle,
-} from 'components/layout'
-import { List, ListItem } from 'components/typography'
 import { ChangeEvent, Fragment, SVGAttributes } from 'react'
 import {
   VscChromeClose,
@@ -16,10 +6,20 @@ import {
   VscTrash,
 } from 'react-icons/vsc'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { State, useStore } from 'store'
 import styled, { css, keyframes } from 'styled-components'
-import formatLocation from 'utils/formatLocation'
 import shallow from 'zustand/shallow'
+import { Switch } from '~/components/input'
+import LocationAutocomplete from '~/components/input/LocationAutocomplete'
+import {
+  Flex,
+  FlexDirection,
+  FlexDistribute,
+  FlexPosition,
+  pageStyle,
+} from '~/components/layout'
+import { List, ListItem } from '~/components/typography'
+import { State, useStore } from '~/store'
+import formatLocation from '~/utils/formatLocation'
 
 const Container = styled.div<{ show: boolean }>`
   ${pageStyle}

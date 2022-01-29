@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useWeather } from 'store'
+import { useWeather } from '~/store'
 import Column from './Column'
 import Tile from './Tile'
 
@@ -17,7 +17,6 @@ const formatToHour = (date?: Date) => {
 const formatTime = (time: Date) => formatToHour(time).toString()
 
 export default function Hourly(): JSX.Element {
-  return null
   const state = useWeather()
   const hourly = useMemo(() => state?.hourly?.slice(0, 4), [state])
 

@@ -1,7 +1,7 @@
-import useIsMounted from 'hooks/useIsMounted'
-import getCurrentLocation from 'location/getCurrentLocation'
 import { Fragment, ReactNode, useEffect } from 'react'
-import { State, useStore } from 'store'
+import useIsMounted from '~/hooks/useIsMounted'
+import getCurrentLocation from '~/location/getCurrentLocation'
+import { State, useStore } from '~/store'
 
 type StoreProviderProps = {
   children: ReactNode

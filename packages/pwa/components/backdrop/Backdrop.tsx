@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
-import useActiveLocation from 'store/useActiveLocation'
 import styled from 'styled-components'
 import SunCalc from 'suncalc'
+import useActiveLocation from '~/store/useActiveLocation'
 
 type SunEvents = {
   sunrise: Date

@@ -1,7 +1,7 @@
 import { UserLocation } from '@weather/base/models/User'
 import { useEffect, useMemo } from 'react'
-import { State, useStore } from 'store'
 import shallow from 'zustand/shallow'
+import { State, useStore } from '~/store'
 
 const selector = (state: State) => ({
   locations: state.user.locations,

@@ -1,8 +1,8 @@
 import Weather from '@weather/base/models/Weather'
 import { useEffect } from 'react'
-import { State } from 'store'
-import useActiveLocation from 'store/useActiveLocation'
 import shallow from 'zustand/shallow'
+import { State } from '~/store'
+import useActiveLocation from '~/store/useActiveLocation'
 import { WeatherState } from './slices/weatherSlice'
 import useStore from './useStore'
 
@@ -26,7 +26,8 @@ const shouldFetchWeather = (
 }
 
 export default function useWeather(): Weather {
-  const state = useStore(selector, shallow)
+  // const state = useStore(selector, shallow)
+  const state = useStore(selector)
   const activeLocation = useActiveLocation()
 
   const { current, daily, hourly, fetchWeather } = state

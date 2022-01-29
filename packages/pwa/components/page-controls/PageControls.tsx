@@ -1,5 +1,5 @@
-import { Flex, FlexDirection, FlexPosition } from 'components/layout'
 import styled from 'styled-components'
+import { Flex, FlexDirection, FlexPosition } from '~/components/layout'
 
 type Dir = 'horizontal' | 'vertical'
 

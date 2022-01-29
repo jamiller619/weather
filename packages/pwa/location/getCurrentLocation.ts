@@ -1,6 +1,6 @@
 import Location, { createLocation } from '@weather/base/models/Location'
 import { getLocationFromIP } from '@weather/base/services/IPInfoService'
-import { IPINFO_TOKEN } from 'config'
+import { IPINFO_TOKEN } from '~/config'
 // import { Store } from 'store'
 
 export default async function getCurrentLocation(): Promise<

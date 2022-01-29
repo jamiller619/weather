@@ -1,9 +1,9 @@
 import { Forecast } from '@weather/base/models/Weather'
-import WeatherIcon from 'components/icons/WeatherIcon'
-import { Flex, FlexDirection, FlexDistribute } from 'components/layout'
-import { BreakWord, LargeText } from 'components/typography'
-import { useUserTempFormat } from 'store'
 import styled from 'styled-components'
+import WeatherIcon from '~/components/icons/WeatherIcon'
+import { Flex, FlexDirection, FlexDistribute } from '~/components/layout'
+import { BreakWord, LargeText } from '~/components/typography'
+import { useUserTempFormat } from '~/store'
 
 const ColumnContainer = styled(Flex).attrs({
   dir: FlexDirection.column,

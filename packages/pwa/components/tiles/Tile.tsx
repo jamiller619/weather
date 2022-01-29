@@ -1,7 +1,7 @@
-import Flex, { FlexDirection } from 'components/layout/Flex'
-import Text from 'components/typography/Text'
 import { HTMLAttributes, PropsWithChildren, useState } from 'react'
 import styled from 'styled-components'
+import { Flex, FlexDirection } from '~/components/layout'
+import { Text } from '~/components/typography'
 import Backdrop from './Backdrop'
 
 const Container = styled(Flex).attrs({

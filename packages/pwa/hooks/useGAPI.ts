@@ -1,5 +1,5 @@
-import { GOOGLE_API_KEY } from 'config'
 import { useEffect, useState } from 'react'
+import { GOOGLE_API_KEY } from '~/config'
 
 const scriptId = 'google-api-loader'
 

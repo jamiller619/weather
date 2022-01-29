@@ -3,8 +3,8 @@ import User, {
   UserLocation,
   UserSettings,
 } from '@weather/base/models/User'
-import State from 'store/State'
 import { SetState } from 'zustand'
+import State from '~/store/State'
 
 export type UserState = User & {
   activeLocationId?: string
