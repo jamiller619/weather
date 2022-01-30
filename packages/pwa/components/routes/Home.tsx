@@ -1,8 +1,17 @@
-import Location from '@weather/base/models/Location'
-import { Fragment, HTMLAttributes, useCallback, useMemo, useState } from 'react'
+import {
+  Fragment,
+  HTMLAttributes,
+  memo,
+  useCallback,
+  useMemo,
+  useState,
+} from 'react'
 import { useLocation } from 'react-router-dom'
 import styled, { css } from 'styled-components'
-import shallow from 'zustand/shallow'
+
+import { LocationMeta } from '@weather/base/models/Location'
+import { CurrentWeather } from '@weather/base/models/Weather'
+
 import Backdrop from '~/components/backdrop/Backdrop'
 import Carousel from '~/components/carousel/Carousel'
 import {
@@ -52,12 +61,6 @@ const WeatherHeadlinesContainer = styled(Section)`
   padding-bottom: 2rem;
 `
 
-const WeatherCarousel = styled(Section)`
-  padding-left: 0;
-  height: 50vh;
-  margin-bottom: 2rem;
-`
-
 const HeaderContainer = styled(Section).attrs({
   as: 'header',
 })`
@@ -73,7 +76,7 @@ const CurrentWeatherDetails = styled(Flex).attrs({
 `
 
 type HeaderProps = HTMLAttributes<HTMLElement> & {
-  location?: Location | null
+  location?: LocationMeta
 }
 
 const Header: React.FC<HeaderProps> = ({ location, ...props }) => {
@@ -86,44 +89,15 @@ const Header: React.FC<HeaderProps> = ({ location, ...props }) => {
   return (
     <HeaderContainer {...props}>
       <Text>{today}</Text>
-      <Text>{location != null && formatLocation(location)}</Text>
+      <Text>{formatLocation(location)}</Text>
     </HeaderContainer>
   )
 }
 
-const LocationCarouselContainer = styled(Carousel)`
-  flex: 2;
-`
-
-const InnerLocationCarouselContainer = styled(Flex).attrs({
-  dir: FlexDirection.column,
-})`
-  height: 100%;
-`
-
-const weatherHeadlinesSelector = (state: State) =>
-  state.weather.getCurrentWeatherForLocation
-
-const WeatherHeadlines: React.FC<{ locationId: string }> = ({
-  locationId,
-}): JSX.Element => {
+const WeatherHeadlines: React.FC<
+  Pick<CurrentWeather, 'temp' | 'high' | 'low'>
+> = memo(({ temp, high, low }): JSX.Element => {
   const formatTemp = useUserTempFormat()
-  const getWeather = useStore(weatherHeadlinesSelector)
-  const { temp, high, low } = useMemo(
-    () => getWeather(locationId),
-    [getWeather, locationId]
-  )
-  // const [currentTempRef, resetCurrentTemp] = useSkeleton('9rem', '6rem')
-  // const [highTempRef, resetHighTemp] = useSkeleton('4rem', '3rem')
-  // const [lowTempRef, resetLowTemp] = useSkeleton('4rem', '3rem')
-
-  // useEffect(() => {
-  //   if (temp != null && high != null && low != null) {
-  //     resetCurrentTemp()
-  //     resetHighTemp()
-  //     resetLowTemp()
-  //   }
-  // }, [high, low, resetCurrentTemp, resetHighTemp, resetLowTemp, temp])
 
   return (
     <WeatherHeadlinesContainer>
@@ -135,38 +109,48 @@ const WeatherHeadlines: React.FC<{ locationId: string }> = ({
       </CurrentWeatherDetails>
     </WeatherHeadlinesContainer>
   )
-}
+})
+
+WeatherHeadlines.displayName = 'WeatherHeadlines'
+
+const LocationCarouselContainer = styled(Carousel)`
+  flex: 2;
+`
+
+const InnerLocationCarouselContainer = styled(Flex).attrs({
+  dir: FlexDirection.column,
+})`
+  height: 100%;
+`
 
 const selector = (state: State) => ({
-  activeLocationId: state.user.activeLocationId,
+  locations: Object.values(state.user.locations),
+  weather: Object.entries(state.weather.data),
   setActiveLocation: state.user.setActiveLocation,
-  locations: state.user.locations,
+  activeLocationId: state.user.activeLocationId,
 })
 
 const LocationCarousel: React.FC = () => {
-  // const { current } = useWeather()
-  // const { temp, high, low } = current
-
-  const {
-    activeLocationId,
-    setActiveLocation,
-    locations: locationsObject,
-  } = useStore(selector, shallow)
-
-  const locations = useMemo(
-    () => Object.values(locationsObject),
-    [locationsObject]
-  )
+  const { locations, setActiveLocation, activeLocationId, weather } =
+    useStore(selector)
 
   const activeLocationIndex = useMemo(
     () => locations.findIndex(({ id }) => id === activeLocationId),
     [activeLocationId, locations]
   )
 
-  // const startIndex = useRef(activeLocationIndex)
+  const activeWeather = useMemo(
+    () =>
+      weather.find(([id]) => id === activeLocationId)?.[1].current ??
+      ({} as CurrentWeather),
+    [activeLocationId, weather]
+  )
+
   const handleCarouselChange = useCallback(
     (index: number) => {
-      return setActiveLocation(locations[index].id)
+      const { id } = locations[index]
+
+      setActiveLocation(id)
     },
     [locations, setActiveLocation]
   )
@@ -177,32 +161,51 @@ const LocationCarousel: React.FC = () => {
         {locations.map((location) => (
           <InnerLocationCarouselContainer key={location.id}>
             <Header location={location} />
-            <WeatherHeadlines locationId={location.id} />
+            <WeatherHeadlines
+              temp={activeWeather.temp}
+              low={activeWeather.low}
+              high={activeWeather.high}
+            />
           </InnerLocationCarouselContainer>
         ))}
       </LocationCarouselContainer>
-      <PageControls length={locations.length} current={activeLocationIndex} />
+      {locations.length > 1 && (
+        <PageControls length={locations.length} current={activeLocationIndex} />
+      )}
     </Fragment>
+  )
+}
+
+const WeatherCarouselContainer = styled(Section)`
+  padding-left: 0;
+  height: 50vh;
+  margin-bottom: 2rem;
+`
+
+const WeatherCarousel: React.FC = () => {
+  const [activeCarouselPage, setActiveCarouselPage] = useState(0)
+
+  return (
+    <WeatherCarouselContainer>
+      <Carousel onChange={setActiveCarouselPage}>
+        <Tiles.Hourly />
+        <Tiles.Daily />
+        <Tiles.Radar />
+      </Carousel>
+      <PageControls length={3} current={activeCarouselPage} />
+    </WeatherCarouselContainer>
   )
 }
 
 export default function Home(): JSX.Element {
   const { pathname } = useLocation()
-  const [activeCarouselPage, setActiveCarouselPage] = useState(0)
 
   return (
     <Fragment>
       <Backdrop />
       <Container show={pathname === '/'}>
         <LocationCarousel />
-        <WeatherCarousel>
-          <Carousel onChange={setActiveCarouselPage}>
-            <Tiles.Hourly />
-            <Tiles.Daily />
-            <Tiles.Radar />
-          </Carousel>
-          <PageControls length={3} current={activeCarouselPage} />
-        </WeatherCarousel>
+        <WeatherCarousel />
       </Container>
     </Fragment>
   )

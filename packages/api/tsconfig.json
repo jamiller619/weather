@@ -9,7 +9,10 @@
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
-    "module": "es2022"
+    "module": "es2022",
+    "paths": {
+      "~/*": ["./*"]
+    }
   },
   "include": ["**/*.ts"],
   "references": [{ "path": "../base" }]

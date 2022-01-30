@@ -8,6 +8,7 @@ import {
 import { useLocation, useNavigate } from 'react-router-dom'
 import styled, { css, keyframes } from 'styled-components'
 import shallow from 'zustand/shallow'
+
 import { Switch } from '~/components/input'
 import LocationAutocomplete from '~/components/input/LocationAutocomplete'
 import {

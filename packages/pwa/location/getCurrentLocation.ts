@@ -6,12 +6,6 @@ import { IPINFO_TOKEN } from '~/config'
 export default async function getCurrentLocation(): Promise<
   Location | undefined
 > {
-  // const loc1 = getLocationFromCache()
-
-  // if (loc1 != null) {
-  //   return Promise.resolve(loc1)
-  // }
-
   const loc2 = await getLocationFromBrowser()
 
   if (loc2 != null) {

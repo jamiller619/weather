@@ -1,5 +1,5 @@
-import shallow from 'zustand/shallow'
-import { State, useStore } from '~/store'
+import { useMemo } from 'react'
+import { useWeather } from '~/store'
 import Column from './Column'
 import Tile from './Tile'
 
@@ -25,14 +25,13 @@ const formatToShortDay = (title = '') => {
   }, title)
 }
 
-const selector = (state: State) => state.weather.daily.slice(0, 4)
-
 export default function Daily(): JSX.Element {
-  const forecast = useStore(selector, shallow)
+  const state = useWeather()
+  const daily = useMemo(() => state?.hourly?.slice(0, 4) ?? [], [state])
 
   return (
     <Tile title="Daily">
-      {forecast.map((data) => (
+      {daily.map((data) => (
         <Column
           key={data.startTime?.getTime?.()}
           title={formatToShortDay(data.periodName)}

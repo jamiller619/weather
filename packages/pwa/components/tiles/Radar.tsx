@@ -2,16 +2,18 @@ import Leaflet, { LatLngTuple } from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import 'mapbox-gl-leaflet'
 import 'mapbox-gl/dist/mapbox-gl.css'
-import React, { useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import {
-  MapContainer as RLMapContainer,
   Marker,
-  useMap,
+  MapContainer as RLMapContainer,
   WMSTileLayer,
+  useMap,
 } from 'react-leaflet'
 import styled from 'styled-components'
+
 import { MAPBOX_STYLE, MAPBOX_TOKEN } from '~/config'
 import useActiveLocation from '~/store/useActiveLocation'
+
 import Tile from './Tile'
 
 const ZOOM = 11
@@ -60,7 +62,7 @@ type TimeLayerProps = {
   index: number
 }
 
-const TimeLayer: React.FC<TimeLayerProps> = React.memo(({ index }) => {
+const TimeLayer: React.FC<TimeLayerProps> = ({ index }) => {
   const diff =
     INTERVALS * INTERVAL_DURATION_HOURS - INTERVAL_DURATION_HOURS * index
 
@@ -75,26 +77,22 @@ const TimeLayer: React.FC<TimeLayerProps> = React.memo(({ index }) => {
       }}
     />
   )
-})
+}
 
-TimeLayer.displayName = 'TimeLayer'
-
-const MapboxLayer: React.FC<Leaflet.MapboxGLOptions> = React.memo((props) => {
+const MapboxLayer: React.FC<Leaflet.MapboxGLOptions> = (props) => {
   const map = useMap()
   const layer = Leaflet.mapboxGL(props)
 
   layer.addTo(map)
 
   return null
-})
-
-MapboxLayer.displayName = 'MapboxLayer'
+}
 
 const layers = new Array(INTERVALS).fill(null).map((_, i) => {
   return <TimeLayer index={i} key={i} />
 })
 
-const Map = React.memo(({ pos }: { pos: LatLngTuple }) => {
+const Map = ({ pos }: { pos: LatLngTuple }) => {
   return (
     <MapContainer center={pos} zoom={ZOOM} zoomControl={false}>
       <MapboxLayer style={MAPBOX_STYLE} accessToken={MAPBOX_TOKEN} />
@@ -102,42 +100,35 @@ const Map = React.memo(({ pos }: { pos: LatLngTuple }) => {
       <Marker position={pos} />
     </MapContainer>
   )
-})
-
-Map.displayName = 'Map'
+}
 
 const Radar: React.FC = () => {
-  return null
-  const [isOpen, setIsOpen] = useState(false)
   const activeLocation = useActiveLocation()
-  const pos = [activeLocation?.lat, activeLocation?.lng] as LatLngTuple
-  // const [timeLayerIndex, setTimeLayerIndex] = useState(0)
+  const [map, setMap] = useState<L.Map | null>(null)
 
-  // useEffect(() => {
-  //   const timer = setInterval(() => {
-  //     setTimeLayerIndex((i) => {
-  //       if (i === INTERVALS - 1) {
-  //         return 0
-  //       }
+  const displayMap = useMemo(
+    () => (
+      <MapContainer zoom={ZOOM} zoomControl={false} whenCreated={setMap}>
+        <MapboxLayer style={MAPBOX_STYLE} accessToken={MAPBOX_TOKEN} />
+        {/* {layers[timeLayerIndex]} */}
+        {/* <Marker position={pos} /> */}
+      </MapContainer>
+    ),
+    []
+  )
 
-  //       return i + 1
-  //     })
-  //   }, 1000)
+  useEffect(() => {
+    const pos = [activeLocation?.lat, activeLocation?.lng] as LatLngTuple
+    console.log(map)
 
-  //   return () => {
-  //     clearInterval(timer)
-  //   }
-  // }, [])
+    if (map) {
+      map.setView(pos, ZOOM)
+    }
+  }, [activeLocation, map])
 
   return (
-    <Tile
-      title="Radar"
-      onOpen={() => setIsOpen(true)}
-      onClose={() => setIsOpen(false)}
-    >
-      <Container>
-        <Map pos={pos} />
-      </Container>
+    <Tile title="Radar">
+      <Container>{displayMap}</Container>
     </Tile>
   )
 }

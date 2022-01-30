@@ -1,4 +1,6 @@
 import { BrowserRouter } from 'react-router-dom'
+
+import Loader from '~/components/loader/Loader'
 import StoreProvider from '~/components/providers/StoreProvider'
 import StyleProvider from '~/components/providers/StyleProvider'
 import Home from '~/components/routes/Home'
@@ -9,6 +11,7 @@ export default function App(): JSX.Element {
     <BrowserRouter>
       <StoreProvider>
         <StyleProvider>
+          <Loader />
           <Settings />
           <Home />
         </StyleProvider>

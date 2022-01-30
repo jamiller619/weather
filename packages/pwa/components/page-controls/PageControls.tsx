@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+
 import { Flex, FlexDirection, FlexPosition } from '~/components/layout'
 
 type Dir = 'horizontal' | 'vertical'
@@ -17,10 +18,10 @@ const Container = styled(Flex).attrs({
 `
 
 const Dot = styled.div<{ active: boolean }>`
-  width: 0.5rem;
-  height: 0.5rem;
+  width: 0.42rem;
+  height: 0.42rem;
   border-radius: 100%;
-  margin: 0.33rem;
+  margin: 0.35rem;
   background: ${({ active, theme }) =>
     active ? theme.colors.foreground : theme.colors.faded};
 `

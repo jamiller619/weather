@@ -1,4 +1,6 @@
 import { Fragment, ReactNode, useEffect } from 'react'
+import shallow from 'zustand/shallow'
+
 import useIsMounted from '~/hooks/useIsMounted'
 import getCurrentLocation from '~/location/getCurrentLocation'
 import { State, useStore } from '~/store'
@@ -13,23 +15,20 @@ export default function StoreProvider({
   children,
 }: StoreProviderProps): JSX.Element {
   const isMounted = useIsMounted()
-  const { activeLocationId, addLocation } = useStore(selector)
+  const { activeLocationId, setActiveLocation } = useStore(selector, shallow)
 
   useEffect(() => {
     if (activeLocationId == null) {
-      getCurrentLocation().then((currentLocation) => {
-        if (isMounted() && currentLocation != null) {
-          addLocation(
-            {
-              ...currentLocation,
-              isCurrent: true,
-            },
-            true
-          )
+      getCurrentLocation().then((location) => {
+        if (isMounted() && location != null) {
+          setActiveLocation(location.id, {
+            ...location,
+            isCurrent: true,
+          })
         }
       })
     }
-  }, [activeLocationId, addLocation, isMounted])
+  }, [activeLocationId, isMounted, setActiveLocation])
 
   return <Fragment>{children}</Fragment>
 }

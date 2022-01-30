@@ -1,8 +1,8 @@
-import { cache } from '@weather/base/services/CacheService'
-import cacheKey from '@weather/base/services/weather/cacheKey'
-import * as weather from '@weather/base/services/weather/currentWeather'
-import * as forecast from '@weather/base/services/weather/forecast'
-import Weather, { CurrentWeather, Forecast } from 'models/Weather'
+import { cache } from './CacheService'
+import cacheKey from './weather/cacheKey'
+import * as weather from './weather/currentWeather'
+import * as forecast from './weather/forecast'
+import Weather, { CurrentWeather, Forecast } from '~/models/Weather'
 
 const ttls = {
   current: Number(process.env.TTL_CURRENT),

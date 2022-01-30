@@ -1,22 +1,14 @@
 import Weather from '@weather/base/models/Weather'
 import { useEffect } from 'react'
-import shallow from 'zustand/shallow'
 import { State } from '~/store'
 import useActiveLocation from '~/store/useActiveLocation'
-import { WeatherState } from './slices/weatherSlice'
+import { FetchedWeather } from './slices/weatherSlice'
 import useStore from './useStore'
 
 const selector = (state: State) => state.weather
 
-const shouldFetchWeather = (
-  state?: WeatherState,
-  activeLocationId?: string
-) => {
-  if (
-    activeLocationId == null ||
-    state?.fetchedAt == null ||
-    (activeLocationId != null && state?.locationId !== activeLocationId)
-  ) {
+const shouldFetchWeather = (state?: FetchedWeather) => {
+  if (state?.fetchedAt == null) {
     return true
   }
 
@@ -25,24 +17,22 @@ const shouldFetchWeather = (
   return diff > 1000 * 60 * 5
 }
 
-export default function useWeather(): Weather {
-  // const state = useStore(selector, shallow)
-  const state = useStore(selector)
+export default function useWeather(): Weather | undefined {
+  const { data, fetchWeather } = useStore(selector)
   const activeLocation = useActiveLocation()
-
-  const { current, daily, hourly, fetchWeather } = state
+  const { lat, lng } = activeLocation
+  const weather = data[activeLocation.id]
 
   useEffect(() => {
-    const { lat, lng, id } = activeLocation
-
-    if (lat != null && lng != null && shouldFetchWeather(state, id)) {
+    if (
+      weather == null &&
+      lat != null &&
+      lng != null &&
+      shouldFetchWeather(weather)
+    ) {
       fetchWeather(activeLocation)
     }
-  }, [activeLocation, fetchWeather, state])
+  })
 
-  return {
-    current,
-    daily,
-    hourly,
-  }
+  return weather
 }

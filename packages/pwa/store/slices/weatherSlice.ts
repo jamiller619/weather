@@ -1,87 +1,91 @@
-import { UserLocation } from '@weather/base/models/User'
-import Weather,{ CurrentWeather,Forecast } from '@weather/base/models/Weather'
-import {parseObject} from '@weather/base/utils/JSONDateReviver'
 import { SetState } from 'zustand'
-import {API_URL} from '~/config'
+
+import { UserLocation } from '@weather/base/models/User'
+import Weather from '@weather/base/models/Weather'
+import { parseObject } from '@weather/base/utils/JSONDateReviver'
+
+import { API_URL } from '~/config'
 import State from '~/store/State'
+import get from '~/utils/get'
+
 import Cache from './Cache'
 
-type SerializedWeather = Weather & {
+export type FetchedWeather = Weather & {
   fetchedAt?: Date
-  locationId?: string
 }
 
-export type WeatherState = SerializedWeather & {
+export type LocationWeather = {
+  [locationId: string]: FetchedWeather
+}
+
+export type WeatherState = {
+  data: LocationWeather
   fetchWeather: (location: UserLocation) => Promise<void>
-  getCurrentWeatherForLocation: (locationId: string) => CurrentWeather
 }
 
-const createState = (set: SetState<State>) => ({
-  current: {} as CurrentWeather,
-  daily: [] as Forecast[],
-  hourly: [] as Forecast[],
+const cache = new Cache<FetchedWeather>('weather.cache', window.sessionStorage)
+
+const createState = (set: SetState<State>): WeatherState => ({
+  data:
+    cache.getAll()?.reduce((result, current) => {
+      const { key: id, value } = current
+
+      result[id] = value
+
+      return result
+    }, {} as LocationWeather) ?? {},
   fetchWeather: fetchWeather(set),
-  getCurrentWeatherForLocation,
 })
-
-const cache = new Cache<SerializedWeather>(
-  'weather.cache',
-  window.sessionStorage
-)
-
-const getCurrentWeatherForLocation = (locationId: string): CurrentWeather => {
-  // return cache.get(locationId)?.current ?? ({} as
-  // CurrentWeather)
-  return {} as CurrentWeather
-}
 
 const fetchWeather = (set: SetState<State>) => {
   return async (location: UserLocation): Promise<void> => {
+    // We use to have a check here for cached data, but
+    // since we're now getting that cache on the initial
+    // create, another check here would be redundant.
     const { lat, lng, id } = location
 
     if (lat != null && lng != null) {
-      const response = await fetch(`${API_URL}/weather/${lat},${lng}`)
-      const data = parseObject((await response.json()) as Weather)
-      const weather: SerializedWeather = {
-        ...data,
-        locationId: id,
-        fetchedAt: new Date(),
+      try {
+        set({
+          isFetching: true,
+        })
+
+        const response = await get<Weather>(`${API_URL}/weather/${lat},${lng}`)
+        const data = parseObject<Weather>(response ?? ({} as Weather))
+        const weather: FetchedWeather = {
+          ...data,
+          fetchedAt: new Date(),
+        }
+
+        cache.set(id, weather, Date.now() + 1000 * 60 * 10)
+
+        set((prev) => ({
+          user: {
+            ...prev.user,
+            locations: {
+              ...prev.user.locations,
+              [id]: {
+                ...prev.user.locations[id],
+                ...data.location,
+              },
+            },
+          },
+          weather: {
+            ...prev.weather,
+            data: {
+              ...prev.weather.data,
+              [id]: weather,
+            },
+          },
+        }))
+      } catch (err) {
+        console.error(err)
+      } finally {
+        set({
+          isFetching: false,
+        })
       }
-      // cache.set(id, weather, Date.now() + 1000 * 60 * 10)
-      set((prev) => ({
-        weather: {
-          ...prev.weather,
-          ...weather,
-        },
-      }))
     }
-    // const cached = cache.get(id)
-
-    // if (cached != null && cached?.fetchedAt != null) {
-    //   set((prev) => ({
-    //     weather: {
-    //       ...prev.weather,
-    //       ...cached,
-    //     },
-    //   }))
-    // } else if (lat != null && lng != null) {
-    //   const response = await fetch(`${API_URL}/weather/${lat},${lng}`)
-    //   const data = parseObject((await response.json()) as Weather)
-    //   const weather: SerializedWeather = {
-    //     ...data,
-    //     locationId: id,
-    //     fetchedAt: new Date(),
-    //   }
-
-    //   cache.set(id, weather, Date.now() + 1000 * 60 * 10)
-
-    //   set((prev) => ({
-    //     weather: {
-    //       ...prev.weather,
-    //       ...weather,
-    //     },
-    //   }))
-    // }
   }
 }
 

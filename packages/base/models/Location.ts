@@ -6,15 +6,18 @@ export type Locations = {
   [id: string]: Location
 }
 
-export default interface Location {
+export type LocationMeta = {
+  city?: string
+  region?: string
+}
+
+export default interface Location extends LocationMeta {
   id: string
   gridId?: string
   gridX?: number
   gridY?: number
   lat?: number
   lng?: number
-  city?: string | null
-  region?: string | null
   source: LocationSource
 }
 

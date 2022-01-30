@@ -11,7 +11,10 @@
     "baseUrl": ".",
     "module": "es2022",
     "resolveJsonModule": true,
-    "target": "es2021"
+    "target": "es2021",
+    "paths": {
+      "~/*": ["./*"]
+    }
   },
   "include": ["**/*.ts", "**/*.d.ts"]
 }

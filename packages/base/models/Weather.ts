@@ -1,3 +1,5 @@
+import { LocationMeta } from './Location'
+
 export enum TempTrend {
   Rising = 0,
   Falling = 1,
@@ -37,4 +39,5 @@ export default interface Weather {
   current: CurrentWeather
   daily: Forecast[]
   hourly: Forecast[]
+  location: LocationMeta
 }

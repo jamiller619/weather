@@ -9,6 +9,11 @@ type CacheRoot<T> = {
   [key: string]: CacheEntry<T>
 }
 
+type KeyValue<T> = {
+  key: string
+  value: T
+}
+
 export default class Cache<T> {
   key: string
   storage: Storage
@@ -18,7 +23,7 @@ export default class Cache<T> {
     this.storage = storage
   }
 
-  #getRoot() {
+  #getRoot(): CacheRoot<T> | undefined {
     const cached = this.storage.getItem(this.key)
 
     if (cached != null) {
@@ -26,13 +31,32 @@ export default class Cache<T> {
     }
   }
 
-  get(id: string) {
+  getAll(): KeyValue<T>[] | undefined {
+    const root = this.#getRoot()
+
+    if (root != null) {
+      return Object.keys(root).map((key) => {
+        const value = this.get(key)
+
+        if (value != null) {
+          return {
+            key,
+            value,
+          }
+        }
+      }).filter((kv) => kv != null) as KeyValue<T>[]
+    }
+  }
+
+  get(id: string): T | undefined {
     const entry = this.#getRoot()?.[id]
 
     if (entry?.maxAge != null) {
       if (entry.maxAge > 0) {
         if (Date.now() > entry.maxAge) {
-          return this.remove(id)
+          this.remove(id)
+
+          return undefined
         }
       }
     }
@@ -44,7 +68,7 @@ export default class Cache<T> {
     return undefined
   }
 
-  set(id: string, value: T, maxAge = 0) {
+  set(id: string, value: T, maxAge = 0): void {
     const entry: CacheEntry<T> = {
       maxAge,
       data: value,
@@ -58,7 +82,7 @@ export default class Cache<T> {
     this.storage.setItem(this.key, JSON.stringify(data))
   }
 
-  remove(id: string) {
+  remove(id: string): void {
     const data = this.#getRoot()
 
     if (data != null) {
@@ -66,7 +90,5 @@ export default class Cache<T> {
 
       this.storage.setItem(this.key, JSON.stringify(data))
     }
-
-    return undefined
   }
 }

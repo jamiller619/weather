@@ -1,10 +1,11 @@
 import { Fragment, ReactNode } from 'react'
 import {
-  createGlobalStyle,
   StyleSheetManager,
   ThemeProvider,
+  createGlobalStyle,
 } from 'styled-components'
 import reset from 'styled-reset'
+
 import WeatherIcons from '~/style/fonts/WeatherIcons.woff'
 import { darkTheme } from '~/style/theme'
 
@@ -20,8 +21,8 @@ const GlobalStyle = createGlobalStyle`
     background-color: #23232e;
     color: ${({ theme }) => theme.colors.foreground};
     font-family: 'DM Sans', sans-serif;
-    font-size: 16px;
-    font-weight: 300;
+    font-size: 18px;
+    font-weight: 400;
     -webkit-font-smoothing: antialiased;
   }
 `

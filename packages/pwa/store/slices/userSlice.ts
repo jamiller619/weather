@@ -8,15 +8,15 @@ import State from '~/store/State'
 
 export type UserState = User & {
   activeLocationId?: string
-  setActiveLocation: (locationId: string) => void
-  addLocation: (location: UserLocation, isActive?: boolean) => void
+  setActiveLocation: (id: string, data?: Partial<UserLocation>) => void
+  addLocation: (location: UserLocation) => void
   removeLocation: (locationId: string) => void
-  editLocation: (locationId: string, location: Partial<UserLocation>) => void
+  // editLocation: (locationId: string, location: Partial<UserLocation>) => void
   saveSettings: (settings: Partial<UserSettings>) => void
 }
 
 const addLocation = (set: SetState<State>) => {
-  return (location: UserLocation, isActive = false): void => {
+  return (location: UserLocation): void => {
     set((prev) => ({
       user: {
         ...prev.user,
@@ -24,20 +24,36 @@ const addLocation = (set: SetState<State>) => {
           ...prev.user.locations,
           [location.id]: location,
         },
-        activeLocationId: isActive ? location.id : prev.user.activeLocationId,
+        // activeLocationId: isActive ? location.id : prev.user.activeLocationId,
       },
     }))
   }
 }
 
 const setActiveLocation = (set: SetState<State>) => {
-  return (locationId: string) => {
-    set((prev) => ({
-      user: {
-        ...prev.user,
-        activeLocationId: locationId,
-      },
-    }))
+  return (id: string, data?: Partial<UserLocation>) => {
+    if (data != null) {
+      set((prev) => ({
+        user: {
+          ...prev.user,
+          locations: {
+            ...prev.user.locations,
+            [id]: {
+              ...prev.user.locations[id],
+              ...data,
+            },
+          },
+          activeLocationId: id,
+        },
+      }))
+    } else {
+      set((prev) => ({
+        user: {
+          ...prev.user,
+          activeLocationId: id,
+        },
+      }))
+    }
   }
 }
 
@@ -72,28 +88,28 @@ const saveSettings = (set: SetState<State>) => {
   }
 }
 
-const editLocation = (set: SetState<State>) => {
-  return (locationId: string, location: Partial<UserLocation>): void => {
-    set((prev) => {
-      const loc = prev.user.locations[locationId]
+// const editLocation = (set: SetState<State>) => {
+//   return (locationId: string, location: Partial<UserLocation>): void => {
+//     set((prev) => {
+//       const loc = prev.user.locations[locationId]
 
-      if (loc != null) {
-        loc.city = location.city ?? loc.city
-        loc.region = location.region ?? loc.region
-      }
+//       if (loc != null) {
+//         loc.city = location.city ?? loc.city
+//         loc.region = location.region ?? loc.region
+//       }
 
-      return {
-        user: {
-          ...prev.user,
-          locations: {
-            ...prev.user.locations,
-            [locationId]: loc,
-          },
-        },
-      }
-    })
-  }
-}
+//       return {
+//         user: {
+//           ...prev.user,
+//           locations: {
+//             ...prev.user.locations,
+//             [locationId]: loc,
+//           },
+//         },
+//       }
+//     })
+//   }
+// }
 
 export const createUserSlice = (set: SetState<State>) => {
   return {
@@ -102,7 +118,7 @@ export const createUserSlice = (set: SetState<State>) => {
       setActiveLocation: setActiveLocation(set),
       addLocation: addLocation(set),
       removeLocation: removeLocation(set),
-      editLocation: editLocation(set),
+      // editLocation: editLocation(set),
       saveSettings: saveSettings(set),
     },
   }

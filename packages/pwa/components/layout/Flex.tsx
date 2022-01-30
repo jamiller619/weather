@@ -33,6 +33,10 @@ const Container: React.FC<FlexProps> = ({
   dir,
   justify,
   align,
+  //@ts-ignore - unused prop
+  show,
+  //@ts-ignore - unused prop
+  isLoading,
   /* eslint-enable @typescript-eslint/no-unused-vars */
   children,
   ...props

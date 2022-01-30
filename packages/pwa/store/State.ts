@@ -9,4 +9,5 @@ export type Store = {
 export default interface State {
   user: UserState
   weather: WeatherState
+  isFetching: boolean
 }
